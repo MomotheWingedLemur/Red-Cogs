@@ -1,0 +1,10 @@
+{
+    "author": ["MomoandGemini"],
+    "name": "ShowTix",
+    "short": "Manages Camshow tickets and channel access.",
+    "description": "Assigns a Camshow role for voice/text channel access, tracks guests in a thread, and clears the guest list monthly.",
+    "install_msg": "ShowTix installed! Use `[p]showtix setup` to get the box office running.",
+    "tags": ["utility", "roles", "vip"],
+    "requirements": [],
+    "end_user_data_statement": "This cog stores Discord User IDs temporarily to track channel access, clearing them monthly."
+}
