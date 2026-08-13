@@ -4,7 +4,7 @@ from discord.ext import tasks
 import datetime
 
 class ShowTix(commands.Cog):
-    """Manages monthly channel access and Camshow tickets."""
+    """Manages monthly channel access and VIP tickets."""
 
     def __init__(self, bot):
         self.bot = bot
@@ -60,19 +60,17 @@ class ShowTix(commands.Cog):
         pass
 
     @showtix.command()
-    async def setup(self, ctx, role: discord.Role, thread: discord.Thread):
-        """Set the VIP role and the thread to post the guest list in."""
-        await self.config.guild(ctx.guild).role_id.set(role.id)
-        await self.config.guild(ctx.guild).thread_id.set(thread.id)
-        
-        await ctx.send(f"🎬 **Box office is open!** VIP role set to `{role.name}` and the guest list will be tracked in {thread.mention}.")
-        await self.update_thread_list(ctx.guild)
-
-    @showtix.command()
     async def setrole(self, ctx, role: discord.Role):
-        """Link a new Discord role to the box office."""
+        """Link a Discord role to the box office."""
         await self.config.guild(ctx.guild).role_id.set(role.id)
         await ctx.send(f"🎫 **Role Linked!** I have attached the `{role.name}` role to the box office. When you use `[p]showtix add`, this is the ticket I will hand out.")
+
+    @showtix.command()
+    async def setthread(self, ctx, thread: discord.Thread):
+        """Set the thread to post the guest list in."""
+        await self.config.guild(ctx.guild).thread_id.set(thread.id)
+        await ctx.send(f"🎬 **Thread Set!** The VIP guest list will now be tracked in {thread.mention}.")
+        await self.update_thread_list(ctx.guild)
 
     @showtix.command()
     async def add(self, ctx, member: discord.Member):
@@ -80,7 +78,7 @@ class ShowTix(commands.Cog):
         role_id = await self.config.guild(ctx.guild).role_id()
         
         if not role_id:
-            return await ctx.send("The box office isn't set up yet! Please link a role first.")
+            return await ctx.send("The box office isn't set up yet! Please link a role using `[p]showtix setrole` first.")
 
         role = ctx.guild.get_role(role_id)
         if role:
@@ -102,7 +100,7 @@ class ShowTix(commands.Cog):
         role_id = await self.config.guild(ctx.guild).role_id()
         
         if not role_id:
-            return await ctx.send("The box office isn't set up yet! Please link a role first.")
+            return await ctx.send("The box office isn't set up yet! Please link a role using `[p]showtix setrole` first.")
 
         async with self.config.guild(ctx.guild).allowed_users() as users:
             if member.id in users:
